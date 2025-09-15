@@ -73,7 +73,6 @@ export const updateMedicine = async (
 };
 
 export const deleteMedicine = async (id: string): Promise<void> => {
-  const db = await initDB();
   await updateMedicine(id, { isActive: false });
 };
 

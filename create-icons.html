@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate Icons</title></head>
+<body>
+<canvas id="canvas192" width="192" height="192"></canvas>
+<canvas id="canvas512" width="512" height="512"></canvas>
+
+<script>
+// Generate 192x192 icon
+const canvas192 = document.getElementById('canvas192')
+const ctx192 = canvas192.getContext('2d')
+
+// Blue gradient background
+const gradient192 = ctx192.createLinearGradient(0, 0, 192, 192)
+gradient192.addColorStop(0, '#3b82f6')
+gradient192.addColorStop(1, '#1d4ed8')
+ctx192.fillStyle = gradient192
+ctx192.fillRect(0, 0, 192, 192)
+
+// White pill shape
+ctx192.fillStyle = 'white'
+ctx192.beginPath()
+ctx192.roundRect(76, 48, 40, 96, 20)
+ctx192.fill()
+
+// Download link for 192x192
+canvas192.toBlob(blob => {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'icon-192.png'
+  a.textContent = 'Download 192x192 icon'
+  document.body.appendChild(a)
+})
+
+// Generate 512x512 icon  
+const canvas512 = document.getElementById('canvas512')
+const ctx512 = canvas512.getContext('2d')
+
+// Blue gradient background
+const gradient512 = ctx512.createLinearGradient(0, 0, 512, 512)
+gradient512.addColorStop(0, '#3b82f6')
+gradient512.addColorStop(1, '#1d4ed8')
+ctx512.fillStyle = gradient512
+ctx512.fillRect(0, 0, 512, 512)
+
+// White pill shape
+ctx512.fillStyle = 'white'
+ctx512.beginPath()
+ctx512.roundRect(206, 128, 100, 256, 50)
+ctx512.fill()
+
+// Download link for 512x512
+canvas512.toBlob(blob => {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'icon-512.png'
+  a.textContent = 'Download 512x512 icon'
+  document.body.appendChild(a)
+})
+</script>
+</body>
+</html>

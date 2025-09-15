@@ -64,28 +64,36 @@ export function WeeklyView({ medicines }: WeeklyViewProps) {
 
   return (
     <Card className="dark:bg-gray-800 dark:border-gray-700">
-      <CardHeader>
+      <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 dark:text-white">
+          <CardTitle className="flex items-center gap-2 dark:text-white text-lg">
             <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-            Weekly Schedule
+            <span className="hidden sm:inline">Weekly Schedule</span>
+            <span className="sm:hidden">Week</span>
           </CardTitle>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={goToPreviousWeek}>
+          <div className="flex items-center gap-1">
+            <Button variant="outline" size="sm" onClick={goToPreviousWeek} className="h-9 w-9 p-0">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <span className="text-sm font-medium dark:text-gray-300">
-              {format(currentWeek, "MMM d")} -{" "}
-              {format(addDays(currentWeek, 6), "MMM d, yyyy")}
-            </span>
-            <Button variant="outline" size="sm" onClick={goToNextWeek}>
+            <Button variant="outline" size="sm" onClick={goToNextWeek} className="h-9 w-9 p-0">
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
+
+        <div className="text-center">
+          <span className="text-sm font-medium dark:text-gray-300">
+            {format(currentWeek, "MMM d")} -{" "}
+            {format(addDays(currentWeek, 6), "MMM d, yyyy")}
+          </span>
+        </div>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-7 gap-2">
+
+      <CardContent className="p-3">
+        {/* Mobile: Show 3.5 days visible, swipeable */}
+        <div className="block sm:hidden">
+          <div className="overflow-x-auto pb-4">
+            <div className="flex gap-2 w-max">
           {weekDays.map((day) => {
             const dayKey = format(day, "yyyy-MM-dd");
             const doses = weekDoses[dayKey] || [];
@@ -95,15 +103,15 @@ export function WeeklyView({ medicines }: WeeklyViewProps) {
             return (
               <div
                 key={dayKey}
-                className={`p-3 rounded-lg border ${
+                className={`flex-shrink-0 w-24 p-3 rounded-lg border ${
                   isToday
                     ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400"
-                    : "border-gray-200 dark:border-gray-600"
+                    : "border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700"
                 }`}
               >
-                <div className="text-center mb-2">
+                <div className="text-center mb-3">
                   <div
-                    className={`text-xs font-medium ${
+                    className={`text-xs font-medium mb-1 ${
                       isToday
                         ? "text-blue-600 dark:text-blue-400"
                         : "text-gray-500 dark:text-gray-400"
@@ -122,14 +130,109 @@ export function WeeklyView({ medicines }: WeeklyViewProps) {
                   </div>
                 </div>
 
-                {doses.length > 0 && (
+                {doses.length > 0 ? (
                   <>
                     <div className="text-xs text-center mb-2 dark:text-gray-300">
-                      {stats.taken}/{stats.total} doses
+                      {stats.taken}/{stats.total}
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mb-2">
                       <div
                         className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                            style={{ width: `${stats.percentage}%` }}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          {doses.slice(0, 2).map((dose) => {
+                            const medicine = medicines.find(
+                              (m) => m.id === dose.medicineId
+                            );
+                            if (!medicine) return null;
+
+                            return (
+                              <div
+                                key={dose.id}
+                                className="text-xs p-1 rounded flex items-center justify-center"
+                                style={{
+                                  backgroundColor: `${medicine.color}20`,
+                                }}
+                              >
+                                <span className="text-center">
+                                  {getStatusIcon(dose.status)}
+                                </span>
+                              </div>
+                            );
+                          })}
+                          {doses.length > 2 && (
+                            <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                              +{doses.length - 2}
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-xs text-gray-400 dark:text-gray-500 text-center">
+                        No meds
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+            ← Scroll to see all days →
+          </div>
+        </div>
+
+        {/* Desktop: Show all 7 days in grid */}
+        <div className="hidden sm:block">
+          <div className="grid grid-cols-7 gap-3">
+            {weekDays.map((day) => {
+              const dayKey = format(day, "yyyy-MM-dd");
+              const doses = weekDoses[dayKey] || [];
+              const stats = getDayStats(dayKey);
+              const isToday = isSameDay(day, new Date());
+
+              return (
+                <div
+                  key={dayKey}
+                  className={`p-4 rounded-lg border ${
+                    isToday
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400"
+                      : "border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700"
+                  }`}
+                >
+                  <div className="text-center mb-3">
+                    <div
+                      className={`text-sm font-medium mb-1 ${
+                        isToday
+                          ? "text-blue-600 dark:text-blue-400"
+                          : "text-gray-500 dark:text-gray-400"
+                      }`}
+                    >
+                      {format(day, "EEE")}
+                    </div>
+                    <div
+                      className={`text-xl font-bold ${
+                        isToday
+                          ? "text-blue-600 dark:text-blue-400"
+                          : "dark:text-white"
+                      }`}
+                    >
+                      {format(day, "d")}
+                    </div>
+                  </div>
+
+                  {doses.length > 0 ? (
+                    <>
+                      <div className="text-sm text-center mb-2 dark:text-gray-300">
+                        {stats.taken}/{stats.total} doses
+                      </div>
+                      <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mb-3">
+                        <div
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${stats.percentage}%` }}
                       />
                     </div>
@@ -143,19 +246,17 @@ export function WeeklyView({ medicines }: WeeklyViewProps) {
                         return (
                           <div
                             key={dose.id}
-                            className="text-xs p-1 rounded flex items-center gap-1"
+                            className="text-xs p-2 rounded flex items-center gap-2"
                             style={{ backgroundColor: `${medicine.color}20` }}
                           >
                             <div
                               className="w-2 h-2 rounded-full"
                               style={{ backgroundColor: medicine.color }}
                             />
-                            <span className="truncate text-gray-700 dark:text-gray-300">
+                            <span className="truncate text-gray-700 dark:text-gray-300 flex-1">
                               {medicine.name}
                             </span>
-                            <span className="ml-auto">
-                              {getStatusIcon(dose.status)}
-                            </span>
+                            <span>{getStatusIcon(dose.status)}</span>
                           </div>
                         );
                       })}
@@ -166,16 +267,15 @@ export function WeeklyView({ medicines }: WeeklyViewProps) {
                       )}
                     </div>
                   </>
-                )}
-
-                {doses.length === 0 && (
-                  <div className="text-xs text-gray-400 dark:text-gray-500 text-center">
+                ) : (
+                  <div className="text-sm text-gray-400 dark:text-gray-500 text-center">
                     No medicines
                   </div>
                 )}
               </div>
             );
           })}
+          </div>
         </div>
       </CardContent>
     </Card>

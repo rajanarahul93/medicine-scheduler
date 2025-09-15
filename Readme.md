@@ -163,23 +163,3 @@ We welcome contributions from the community! Here's how you can help:
 
 
 **[⭐ Star this repo](https://github.com/rajanarahul93/medicine-scheduler)** if you found it helpful!
-
-</div>
-
----
-
-<div align="center">
-<sub>Medicine Scheduler PWA • Created with modern web technologies • 2025</sub>
-</div>
-```
-
-[1](https://www.markdownguide.org/extended-syntax/)
-[2](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks)
-[3](https://www.codecademy.com/resources/docs/markdown/code-blocks)
-[4](https://www.markdownguide.org/basic-syntax/)
-[5](https://learn.microsoft.com/en-us/azure/devops/project/wiki/markdown-guidance?view=azure-devops)
-[6](https://commonmark.org/help/tutorial/09-code.html)
-[7](https://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
-[8](https://markdown-it.github.io)
-[9](https://docusaurus.io/docs/markdown-features/code-blocks)
-[10](https://ardalis.com/markdown-code-block-syntax-highlighting-and-diff/)
